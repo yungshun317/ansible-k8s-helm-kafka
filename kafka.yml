@@ -19,4 +19,16 @@
         - kafka-pv.yml
         - test-client.yml
 
-    - name: 
+    - name: Initialize persistent volumes
+      shell: "kubectl create -f kafka-pv.yml"
+      environment: 
+        KUBECONFIG: /home/ccma/.kube/config
+
+    - name: Install Kafka by Helm
+      shell: "helm install --name kafka -f kafka-values.yml incubator/kafka"
+      environment:
+        KUBECONFIG: /home/ccma/.kube/config
+      register: install_kafka
+
+    - name:
+       
