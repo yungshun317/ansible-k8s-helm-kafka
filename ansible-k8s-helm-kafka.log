@@ -1,0 +1,117 @@
+2018-12-17 16:31:49,800 p=4803 u=yungshun |  PLAY [kafka] *******************************************************************
+2018-12-17 16:31:49,809 p=4803 u=yungshun |  TASK [Copy multiple .yml files to remote] **************************************
+2018-12-17 16:31:52,084 p=4803 u=yungshun |  changed: [10.236.1.1] => (item=kafka-values.yml)
+2018-12-17 16:31:52,668 p=4803 u=yungshun |  changed: [10.236.1.1] => (item=kafka-pv.yml)
+2018-12-17 16:31:53,482 p=4803 u=yungshun |  changed: [10.236.1.1] => (item=test-client.yml)
+2018-12-17 16:31:53,488 p=4803 u=yungshun |  TASK [Initialize persistent volumes] *******************************************
+2018-12-17 16:31:56,282 p=4803 u=yungshun |  changed: [10.236.1.1]
+2018-12-17 16:31:56,287 p=4803 u=yungshun |  TASK [Add incubator repository] ************************************************
+2018-12-17 16:31:57,519 p=4803 u=yungshun |  changed: [10.236.1.1]
+2018-12-17 16:31:57,525 p=4803 u=yungshun |  TASK [Debug add_incubator] *****************************************************
+2018-12-17 16:31:57,632 p=4803 u=yungshun |  ok: [10.236.1.1] => {
+    "add_incubator": {
+        "changed": true, 
+        "cmd": "helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator", 
+        "delta": "0:00:00.807129", 
+        "end": "2018-12-17 16:31:57.436862", 
+        "failed": false, 
+        "rc": 0, 
+        "start": "2018-12-17 16:31:56.629733", 
+        "stderr": "", 
+        "stderr_lines": [], 
+        "stdout": "\"incubator\" has been added to your repositories", 
+        "stdout_lines": [
+            "\"incubator\" has been added to your repositories"
+        ]
+    }
+}
+2018-12-17 16:31:57,636 p=4803 u=yungshun |  TASK [Install Kafka by Helm] ***************************************************
+2018-12-17 16:32:01,229 p=4803 u=yungshun |  changed: [10.236.1.1]
+2018-12-17 16:32:01,235 p=4803 u=yungshun |  TASK [Debug install_kafka] *****************************************************
+2018-12-17 16:32:01,363 p=4803 u=yungshun |  ok: [10.236.1.1] => {
+    "install_kafka": {
+        "changed": true, 
+        "cmd": "helm install --name kafka -f kafka-values.yml incubator/kafka", 
+        "delta": "0:00:03.148925", 
+        "end": "2018-12-17 16:32:01.143277", 
+        "failed": false, 
+        "rc": 0, 
+        "start": "2018-12-17 16:31:57.994352", 
+        "stderr": "", 
+        "stderr_lines": [], 
+        "stdout": "NAME:   kafka\nLAST DEPLOYED: Mon Dec 17 16:31:58 2018\nNAMESPACE: default\nSTATUS: DEPLOYED\n\nRESOURCES:\n==> v1beta1/PodDisruptionBudget\nNAME             MIN AVAILABLE  MAX UNAVAILABLE  ALLOWED DISRUPTIONS  AGE\nkafka-zookeeper  N/A            1                0                    1s\n\n==> v1/Service\nNAME                      TYPE       CLUSTER-IP      EXTERNAL-IP  PORT(S)                     AGE\nkafka-zookeeper-headless  ClusterIP  None            <none>       2181/TCP,3888/TCP,2888/TCP  1s\nkafka-zookeeper           ClusterIP  10.101.251.134  <none>       2181/TCP                    1s\nkafka                     ClusterIP  10.105.13.4     <none>       9092/TCP                    1s\nkafka-headless            ClusterIP  None            <none>       9092/TCP                    1s\n\n==> v1beta1/StatefulSet\nNAME             DESIRED  CURRENT  AGE\nkafka-zookeeper  3        1        1s\nkafka            3        1        1s\n\n==> v1/Pod(related)\nNAME               READY  STATUS             RESTARTS  AGE\nkafka-zookeeper-0  0/1    ContainerCreating  0         1s\nkafka-0            0/1    Pending            0         1s\n\n\nNOTES:\n### Connecting to Kafka from inside Kubernetes\n\nYou can connect to Kafka by running a simple pod in the K8s cluster like this with a configuration like this:\n\n  apiVersion: v1\n  kind: Pod\n  metadata:\n    name: testclient\n    namespace: default\n  spec:\n    containers:\n    - name: kafka\n      image: confluentinc/cp-kafka:5.0.1\n      command:\n        - sh\n        - -c\n        - \"exec tail -f /dev/null\"\n\nOnce you have the testclient pod above running, you can list all kafka\ntopics with:\n\n  kubectl -n default exec testclient -- /usr/bin/kafka-topics --zookeeper kafka-zookeeper:2181 --list\n\nTo create a new topic:\n\n  kubectl -n default exec testclient -- /usr/bin/kafka-topics --zookeeper kafka-zookeeper:2181 --topic test1 --create --partitions 1 --replication-factor 1\n\nTo listen for messages on a topic:\n\n  kubectl -n default exec -ti testclient -- /usr/bin/kafka-console-consumer --bootstrap-server kafka:9092 --topic test1 --from-beginning\n\nTo stop the listener session above press: Ctrl+C\n\nTo start an interactive message producer session:\n  kubectl -n default exec -ti testclient -- /usr/bin/kafka-console-producer --broker-list kafka-headless:9092 --topic test1\n\nTo create a message in the above session, simply type the message and press \"enter\"\nTo end the producer session try: Ctrl+C", 
+        "stdout_lines": [
+            "NAME:   kafka", 
+            "LAST DEPLOYED: Mon Dec 17 16:31:58 2018", 
+            "NAMESPACE: default", 
+            "STATUS: DEPLOYED", 
+            "", 
+            "RESOURCES:", 
+            "==> v1beta1/PodDisruptionBudget", 
+            "NAME             MIN AVAILABLE  MAX UNAVAILABLE  ALLOWED DISRUPTIONS  AGE", 
+            "kafka-zookeeper  N/A            1                0                    1s", 
+            "", 
+            "==> v1/Service", 
+            "NAME                      TYPE       CLUSTER-IP      EXTERNAL-IP  PORT(S)                     AGE", 
+            "kafka-zookeeper-headless  ClusterIP  None            <none>       2181/TCP,3888/TCP,2888/TCP  1s", 
+            "kafka-zookeeper           ClusterIP  10.101.251.134  <none>       2181/TCP                    1s", 
+            "kafka                     ClusterIP  10.105.13.4     <none>       9092/TCP                    1s", 
+            "kafka-headless            ClusterIP  None            <none>       9092/TCP                    1s", 
+            "", 
+            "==> v1beta1/StatefulSet", 
+            "NAME             DESIRED  CURRENT  AGE", 
+            "kafka-zookeeper  3        1        1s", 
+            "kafka            3        1        1s", 
+            "", 
+            "==> v1/Pod(related)", 
+            "NAME               READY  STATUS             RESTARTS  AGE", 
+            "kafka-zookeeper-0  0/1    ContainerCreating  0         1s", 
+            "kafka-0            0/1    Pending            0         1s", 
+            "", 
+            "", 
+            "NOTES:", 
+            "### Connecting to Kafka from inside Kubernetes", 
+            "", 
+            "You can connect to Kafka by running a simple pod in the K8s cluster like this with a configuration like this:", 
+            "", 
+            "  apiVersion: v1", 
+            "  kind: Pod", 
+            "  metadata:", 
+            "    name: testclient", 
+            "    namespace: default", 
+            "  spec:", 
+            "    containers:", 
+            "    - name: kafka", 
+            "      image: confluentinc/cp-kafka:5.0.1", 
+            "      command:", 
+            "        - sh", 
+            "        - -c", 
+            "        - \"exec tail -f /dev/null\"", 
+            "", 
+            "Once you have the testclient pod above running, you can list all kafka", 
+            "topics with:", 
+            "", 
+            "  kubectl -n default exec testclient -- /usr/bin/kafka-topics --zookeeper kafka-zookeeper:2181 --list", 
+            "", 
+            "To create a new topic:", 
+            "", 
+            "  kubectl -n default exec testclient -- /usr/bin/kafka-topics --zookeeper kafka-zookeeper:2181 --topic test1 --create --partitions 1 --replication-factor 1", 
+            "", 
+            "To listen for messages on a topic:", 
+            "", 
+            "  kubectl -n default exec -ti testclient -- /usr/bin/kafka-console-consumer --bootstrap-server kafka:9092 --topic test1 --from-beginning", 
+            "", 
+            "To stop the listener session above press: Ctrl+C", 
+            "", 
+            "To start an interactive message producer session:", 
+            "  kubectl -n default exec -ti testclient -- /usr/bin/kafka-console-producer --broker-list kafka-headless:9092 --topic test1", 
+            "", 
+            "To create a message in the above session, simply type the message and press \"enter\"", 
+            "To end the producer session try: Ctrl+C"
+        ]
+    }
+}
+2018-12-17 16:32:01,367 p=4803 u=yungshun |  TASK [Connect to Kafka using a simple Pod] *************************************
+2018-12-17 16:32:03,929 p=4803 u=yungshun |  changed: [10.236.1.1]
+2018-12-17 16:32:03,932 p=4803 u=yungshun |  PLAY RECAP *********************************************************************
+2018-12-17 16:32:03,932 p=4803 u=yungshun |  10.236.1.1                 : ok=7    changed=5    unreachable=0    failed=0   

@@ -44,3 +44,7 @@
       debug:
         var: install_kafka
        
+    - name: Connect to Kafka using a simple Pod
+      shell: "kubectl create -f test-client.yml"
+      environment:
+        KUBECONFIG: /home/ccma/.kube/config
