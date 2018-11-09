@@ -24,11 +24,23 @@
       environment: 
         KUBECONFIG: /home/ccma/.kube/config
 
+    - name: Add incubator repository 
+      shell: "helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator"
+      environment:
+        KUBECONFIG: /home/ccma/.kube/config
+      register: add_incubator
+
+    - name: Debug add_incubator
+      debug: 
+        var: add_incubator
+
     - name: Install Kafka by Helm
       shell: "helm install --name kafka -f kafka-values.yml incubator/kafka"
       environment:
         KUBECONFIG: /home/ccma/.kube/config
       register: install_kafka
 
-    - name:
+    - name: Debug install_kafka
+      debug:
+        var: install_kafka
        
